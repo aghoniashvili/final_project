@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>dayjs practice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   </head>
+   <body>
+    <script src="https://unpkg.com/dayjs@1.11.10/dayjs.min.js"></script>
+   <script>
+    const aday = dayjs();
+    const today= aday.add(4, 'day');
+    const todayFormatted = today.format('dddd');
+    function isweekend() {
+        const day = today.day();
+        const dayFormatted = today.format('dddd');
+        if( day === 0 || day === 6){return dayFormatted;}
+        else {return "not a weekend";}
+    }
+ console.log(todayFormatted);
+console.log(isweekend());
+    
+
+   </script>
+   </body>
+         </html>
