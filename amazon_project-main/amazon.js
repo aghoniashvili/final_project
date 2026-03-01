@@ -1,4 +1,36 @@
-import { cart, addToCart, CalculateCartNumber } from "./cart.js";
+import { cart, addToCart, calculateCartQuantity, loadCartFetch } from './cart.js';
+
+
+// --- 1. ავტორიზაციის და გამოსვლის (Sign Out) ლოგიკა ---
+const authLink = document.getElementById('auth-link');
+const userGreeting = document.getElementById('user-greeting');
+const authAction = document.getElementById('auth-action');
+
+// ვიღებთ მონაცემებს ლოკალური მეხსიერებიდან
+const token = localStorage.getItem('token');
+const username = localStorage.getItem('username');
+
+if (token && username) {
+  // თუ იუზერი შესულია სისტემაში:
+  userGreeting.textContent = `Hello, ${username}`; // ვაჩვენებთ სახელს
+  authAction.textContent = 'Sign Out';             // ვაჩვენებთ გამოსვლის ღილაკს
+  authAction.style.color = '#f56600';
+  authLink.href = '#';                             // ლოგინის გვერდზე აღარ გადაგვაგდებს
+
+  // გამოსვლის (Sign Out) ფუნქცია
+  authLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    localStorage.removeItem('token');     // ვშლით ტოკენს
+    localStorage.removeItem('username');  // ვშლით სახელს
+    window.location.reload();             // ვაახლებთ გვერდს
+  });
+} else {
+  // თუ იუზერი არ არის შესული:
+  userGreeting.textContent = 'Hello, Sign in';
+  authAction.textContent = 'Account & Lists';
+  authLink.href = 'login.html';
+}
+// --------------------------------------------------------
 
 // მთავარი კონტეინერი
 const productContainer = document.querySelector(".products-grid");
@@ -73,14 +105,20 @@ async function renderProducts() {
 
     // 4. ღილაკების გაცოცხლება (ეს აუცილებლად აქ უნდა იყოს!)
     document.querySelectorAll(".JS-add-to-cart").forEach((button) => {
-      button.addEventListener("click", () => {
+      
+      // აქ დავამატეთ async
+      button.addEventListener("click", async () => {
         const select = button.parentElement.querySelector(".product-quantity-select");
         const addQuantity = Number(select.value);
         const cartProduct = button.dataset.productId;
 
         showAddedToCart(button);
-        addToCart(cartProduct, addQuantity);
-        CalculateCartNumber(); // ესეც აქ დავამატე, რომ განახლდეს
+        
+        // ველოდებით ბექენდში დამატებას (აქ დავამატეთ await)
+        await addToCart(cartProduct, addQuantity); 
+        
+        // ვაახლებთ რაოდენობას Header-ში პირდაპირ cart.js-ის ფუნქციით
+        document.querySelector('.JS-cartNumber').innerHTML = calculateCartQuantity();
       });
     });
 
@@ -91,8 +129,13 @@ async function renderProducts() {
 }
 
 // 5. ფუნქციის გაშვება
+// ველოდებით ბექენდიდან კალათის წამოღებას
+await loadCartFetch(); 
+
 renderProducts();
-CalculateCartNumber(); // თავიდანვე რომ აჩვენოს კალათის რაოდენობა
+
+// თავიდანვე რომ აჩვენოს კალათის რაოდენობა ბექენდიდან წამოღებული მონაცემებით
+document.querySelector('.JS-cartNumber').innerHTML = calculateCartQuantity();
 
 // Helper ფუნქცია (იგივე რაც გქონდათ)
 let Timeout;

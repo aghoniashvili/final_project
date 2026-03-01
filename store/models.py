@@ -24,14 +24,23 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-# 3. კალათის ნივთი (რა აქვს იუზერს კალათაში)
-class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1) # რაოდენობა
+# 3. კალათა
+# 3.1. მთავარი კალათა (რომელიც ეკუთვნის კონკრეტულ იუზერს)
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name}"
+        return f"Cart for {self.user.username}"
+
+# 3.2. კალათაში ჩაგდებული კონკრეტული ნივთები (რაოდენობით)
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE , null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name}"
 
 # 4. შეკვეთა (როცა იყიდის)
 class Order(models.Model):
