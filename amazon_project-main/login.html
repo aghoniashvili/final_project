@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Amazon Sign In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="styles/shared/general.css">
+    
+    <style>
+      body {
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+      }
+      .amazon-logo {
+        width: 100px;
+        margin-bottom: 15px;
+      }
+      .login-container {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 20px 26px;
+        width: 350px;
+        box-sizing: border-box;
+      }
+      h1 {
+        font-weight: 400;
+        font-size: 28px;
+        margin-bottom: 20px;
+        margin-top: 0;
+      }
+      label {
+        font-weight: 700;
+        font-size: 13px;
+        display: block;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #a6a6a6;
+        border-radius: 3px;
+        box-sizing: border-box;
+      }
+      input:focus {
+        border-color: #e77600;
+        box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.5);
+        outline: none;
+      }
+      .login-button {
+        width: 100%;
+        background-color: #f0c14b;
+        border: 1px solid #a88734;
+        border-radius: 3px;
+        padding: 8px;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .login-button:hover {
+        background-color: #f4d078;
+      }
+      .message {
+        margin-top: 15px;
+        font-size: 13px;
+        display: none;
+        color: #c40000;
+      }
+      
+      .register-section {
+        margin-top: 20px;
+        width: 350px;
+        text-align: center;
+      }
+      .divider {
+        display: flex;
+        align-items: center;
+        color: #767676;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+      .divider::before, .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e7e7e7;
+      }
+      .divider::before { margin-right: 10px; }
+      .divider::after { margin-left: 10px; }
+      
+      .register-btn {
+        width: 100%;
+        background-color: #e7e9ec;
+        border: 1px solid #adb1b8;
+        border-radius: 3px;
+        padding: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline-block;
+        box-sizing: border-box;
+        color: black;
+      }
+      .register-btn:hover {
+        background-color: #dfe3e8;
+      }
+    </style>
+  </head>
+  <body>
+
+    <a href="amazon.html">
+      <img class="amazon-logo" src="images/amazon-logo.png" alt="Amazon Logo">
+    </a>
+
+    <div class="login-container">
+      <h1>Sign-In</h1>
+
+      <form id="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+
+        <button type="submit" class="login-button">Sign In</button>
+      </form>
+
+      <div class="message js-error-message">Invalid username or password.</div>
+    </div>
+
+    <div class="register-section">
+      <div class="divider">New to Amazon?</div>
+      <a href="register.html" class="register-btn">Create your Amazon account</a>
+    </div>
+
+    <script type="module" src="login.js"></script>
+
+  </body>
+</html>
