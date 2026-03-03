@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
-# 4. კალათის ნივთის სერიალიზატორი
+# 4. კალათაში არსებული ნივთის სერიალიზატორი
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem

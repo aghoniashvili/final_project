@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token
 from .views import ProductViewSet, CategoryViewSet , RegisterView, CartView ,CreateOrderView , OrderListView
 
-# როუტერი ავტომატურად ქმნის ლინკებს
 router = DefaultRouter()
 router.register(r'products', ProductViewSet)
 router.register(r'categories', CategoryViewSet)

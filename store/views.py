@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth.models import User
 from .models import Cart, CartItem, Product, Category, Order, OrderItem
-# არ დაგავიწყდეს OrderSerializer-ის დამატება იმპორტში
 from .serializers import (
     ProductSerializer, CategorySerializer, UserSerializer, 
     CartSerializer, OrderSerializer

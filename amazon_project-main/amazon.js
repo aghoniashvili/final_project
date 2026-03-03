@@ -137,7 +137,7 @@ renderProducts();
 // თავიდანვე რომ აჩვენოს კალათის რაოდენობა ბექენდიდან წამოღებული მონაცემებით
 document.querySelector('.JS-cartNumber').innerHTML = calculateCartQuantity();
 
-// Helper ფუნქცია (იგივე რაც გქონდათ)
+// Helper ფუნქცია
 let Timeout;
 function showAddedToCart(button) {
   const message = document.querySelector(`.added-to-cart-${button.dataset.productId}`);

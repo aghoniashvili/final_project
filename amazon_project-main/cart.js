@@ -40,7 +40,6 @@ export async function addToCart(productId, quantity = 1) {
   } catch (error) { console.error("Error adding to cart:", error); }
 }
 
-// --- ახალი ფუნქციები ბაზისთვის ---
 
 export async function removeFromCart(productId) {
   const token = localStorage.getItem('token');
