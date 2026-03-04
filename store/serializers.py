@@ -39,8 +39,6 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ['id', 'user', 'items', 'created_at']
 
-# --- ახალი ნაწილი შეკვეთებისთვის ---
-
 # 6. შეკვეთილი ნივთის სერიალიზატორი
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.ReadOnlyField(source='product.name')

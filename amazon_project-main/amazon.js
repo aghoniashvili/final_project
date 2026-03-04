@@ -1,6 +1,5 @@
 import { cart, addToCart, calculateCartQuantity, loadCartFetch } from './cart.js';
 
-
 // --- 1. ავტორიზაციის და გამოსვლის (Sign Out) ლოგიკა ---
 const authLink = document.getElementById('auth-link');
 const userGreeting = document.getElementById('user-greeting');
@@ -35,18 +34,28 @@ if (token && username) {
 // მთავარი კონტეინერი
 const productContainer = document.querySelector(".products-grid");
 
-// ეს ფუნქცია ტვირთავს მონაცემებს ჯანგოდან
-async function renderProducts() {
+// --- 2. პროდუქტების ჩატვირთვა (დამატებულია searchTerm პარამეტრი) ---
+async function renderProducts(searchTerm = '') {
   try {
-    // 1. ვუკავშირდებით ჯანგოს
-    const response = await fetch('http://127.0.0.1:8000/api/products/');
+    // 1. ვუკავშირდებით ჯანგოს და ვამატებთ საძიებო პარამეტრს (თუ არსებობს)
+    let url = 'http://127.0.0.1:8000/api/products/';
+    if (searchTerm) {
+      url += `?search=${encodeURIComponent(searchTerm)}`;
+    }
+
+    const response = await fetch(url);
     const products = await response.json();
 
     let productsHTML = '';
 
+    // თუ ძებნის შედეგად არაფერი მოიძებნა
+    if (products.length === 0) {
+      productContainer.innerHTML = `<p style="padding: 20px; font-size: 18px; grid-column: 1 / -1;">პროდუქტი ვერ მოიძებნა: "${searchTerm}"</p>`;
+      return;
+    }
+
     products.forEach((item) => {
       // 2. ფასის და რეიტინგის გასწორება
-      // რადგან ბექენდს ჯერ რეიტინგი არ აქვს, დროებით ხელით გავუწეროთ 4.5
       const rating = { stars: 4.5, count: 87 }; 
       
       productsHTML += `
@@ -103,10 +112,8 @@ async function renderProducts() {
     // 3. HTML-ის ჩასმა გვერდზე
     productContainer.innerHTML = productsHTML;
 
-    // 4. ღილაკების გაცოცხლება (ეს აუცილებლად აქ უნდა იყოს!)
+    // 4. ღილაკების გაცოცხლება
     document.querySelectorAll(".JS-add-to-cart").forEach((button) => {
-      
-      // აქ დავამატეთ async
       button.addEventListener("click", async () => {
         const select = button.parentElement.querySelector(".product-quantity-select");
         const addQuantity = Number(select.value);
@@ -114,10 +121,8 @@ async function renderProducts() {
 
         showAddedToCart(button);
         
-        // ველოდებით ბექენდში დამატებას (აქ დავამატეთ await)
         await addToCart(cartProduct, addQuantity); 
         
-        // ვაახლებთ რაოდენობას Header-ში პირდაპირ cart.js-ის ფუნქციით
         document.querySelector('.JS-cartNumber').innerHTML = calculateCartQuantity();
       });
     });
@@ -128,20 +133,47 @@ async function renderProducts() {
   }
 }
 
-// 5. ფუნქციის გაშვება
-// ველოდებით ბექენდიდან კალათის წამოღებას
-await loadCartFetch(); 
+// --- 3. საძიებო ველის ლოგიკა ---
+const searchButton = document.querySelector('.search-button');
+const searchInput = document.querySelector('.search-bar');
 
-renderProducts();
+function executeSearch() {
+  const searchTerm = searchInput.value.trim();
+  renderProducts(searchTerm); // ვიძახებთ პროდუქტების თავიდან დახატვას
+}
 
-// თავიდანვე რომ აჩვენოს კალათის რაოდენობა ბექენდიდან წამოღებული მონაცემებით
-document.querySelector('.JS-cartNumber').innerHTML = calculateCartQuantity();
+// ძებნა ღილაკზე (ლუპაზე) დაჭერით
+if (searchButton) {
+  searchButton.addEventListener('click', executeSearch);
+}
+
+// ძებნა კლავიატურაზე "Enter"-ის დაჭერით
+if (searchInput) {
+  searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      executeSearch();
+    }
+  });
+}
+
+// --- 4. ინიციალიზაცია (კოდის გაშვება) ---
+async function initializePage() {
+  // ველოდებით ბექენდიდან კალათის წამოღებას
+  await loadCartFetch(); 
+  
+  // თავდაპირველად ტვირთავს ყველა პროდუქტს (პარამეტრის გარეშე)
+  renderProducts(); 
+  
+  // აჩვენებს კალათის რაოდენობას
+  document.querySelector('.JS-cartNumber').innerHTML = calculateCartQuantity();
+}
+
+initializePage();
 
 // Helper ფუნქცია
 let Timeout;
 function showAddedToCart(button) {
   const message = document.querySelector(`.added-to-cart-${button.dataset.productId}`);
-  // დაცვა: თუ ელემენტი ვერ იპოვა, არ გატყდეს კოდი
   if (!message) return; 
   
   message.classList.add("added-to-cart-visible");
