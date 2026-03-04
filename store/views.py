@@ -14,6 +14,9 @@ from .serializers import (
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [filters.SearchFilter]
+    # მიუთითებთ, რა ველებში ეძებოს (სახელი და აღწერა)
+    search_fields = ['name', 'description']
 
 # კატეგორიების ViewSet
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -124,11 +127,3 @@ class OrderListView(generics.ListAPIView):
         # მომხმარებელმა უნდა ნახოს მხოლოდ თავისი შეკვეთები
         return Order.objects.filter(user=self.request.user).order_by('-created_at')
 
-
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    # ვამატებთ ძებნის ფილტრს
-    filter_backends = [filters.SearchFilter]
-    # მიუთითებთ, რა ველებში ეძებოს (სახელი და აღწერა)
-    search_fields = ['name', 'description']
